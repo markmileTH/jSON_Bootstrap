@@ -98,7 +98,7 @@
           var url = "https://api.openweathermap.org/data/2.5/weather?lat=" + x + "&lon=" + y + "&appid=525ddb052cfb1b0107daeefdbac39a88"
           $.getJSON(url)
                .done((data) => {
-                    console.log(data);
+                    
                     let temp_data = data.main.temp;
                     var temp = temp_data - 273;
 
