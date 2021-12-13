@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-     <title>ตรวจสอบสภาพอากาศ</title>
-     <meta name="viewport" content="initial-scale=1.0">
-     <meta charset="utf-8">
+     <meta charset="UTF-8">
+     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
@@ -12,102 +12,64 @@
           crossorigin="anonymous"></script>
      <script src="https://code.jquery.com/jquery-3.6.0.js"
           integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD2a9VcSrpcXvIpAlNpitfvAmiqkBx67mw&callback=initMap"
-          async defer></script>
 
+     <title>สภาพอากาศ</title>
      <style>
-          /* Always set the map height explicitly to define the size of the div
-          * element that contains the map. */
-          #map {
-               height: 100%;
-          }
 
-          /* Optional: Makes the sample page fill the window. */
-          html,
-          body {
-               height: 100%;
-               margin: 0;
-               padding: 0;
-               background-color: gray;
-          }
-
-          #map {
-               height: 600px;
-               width: 600px;
-               display: block;
-               margin: auto;
-          }
      </style>
 </head>
 
 <body>
-     <div class="container">
+
+     <div class="container" style="margin-top: 30px;margin-left: 50px;">
           <div class="mb-3 row">
-               <label for="inputlat" class="col-sm-2 col-form-label">lat</label>
                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="x">
+                    <input type="text" class="form-control" id="x" style="width: 300px;" value="9.5877111">
                </div>
-               <label for="inputlon" class="col-sm-2 col-form-label">lng</label>
                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="y">
+                    <input type="text" class="form-control" id="y" style="width: 300px;" value="100.0694491">
                </div>
-
                <div class="d-grid gap-2">
-                    <button class="btn btn-primary" type="button" id="btnLoad">Load</button>
+                    <button class="btn btn-primary" type="button" id="btnLoad" style="width: 300px;">Load</button>
                </div>
+               <div class="card" style="width: 300px;margin-left: 11px;" id="Card">
+                    <div class="image" style="margin-top: 15px;">
+                         <img id="home" style="width: 270px;"
+                              src="https://ed.edtfiles-media.com/static-cache/resize-cache/wk18/ud/gal/dcp/30/87047/IMG_0091.jpg"
+                              alt="myhome">
+                    </div>
 
-               <div id="map"></div>
-               <script>
-                    var map;
-                    function initMap(x, y) {
-                         map = new google.maps.Map(document.getElementById('map'), {
-                              center: { lat: x, lng: y },
-                              zoom: 11
-                         });
-                    };
-
-
-               </script>
-
-               <div id="name">
-
+                    
                </div>
-
 
           </div>
 
 
+
+
+
      </div>
-
-
 </body>
 <script>
-     //input and show map
-     alert("โปรดใส่ค่าlatกับlng")
-     $("#map").hide();
+     var x = 9.5877111
+     var y = 100.0694491
+     getjson(x,y);
      $("#btnLoad").click(() => {
-          $("#map").show();
+          $("#cd").remove();
           var x = parseInt($("#x").val());
           var y = parseInt($("#y").val());
-          initMap(x, y);
           getjson(x, y);
-
      });
 
-     function getjson(x, y) {
+     function getjson(x,y) {
           var url = "https://api.openweathermap.org/data/2.5/weather?lat=" + x + "&lon=" + y + "&appid=525ddb052cfb1b0107daeefdbac39a88"
           $.getJSON(url)
                .done((data) => {
-                    
                     let temp_data = data.main.temp;
                     var temp = temp_data - 273;
 
-                    let time_stamp = data.dt;
-                    var time = new Date(time_stamp * 1000);
-                    var hours = time.getHours();
-                    var minutes = "0" + time.getMinutes();
-                    var seconds = "0" + time.getSeconds();
-                    var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+                    let time_now = new Date();
+                    var now = time_now.toLocaleString();
 
                     let time_stamp_sunrise = data.sys.sunrise;
                     var sunrise = new Date(time_stamp_sunrise * 1000);
@@ -123,29 +85,16 @@
                     var seconds_sunset = "0" + sunset.getSeconds();
                     var formattedSunset = hours_sunset + ':' + minutes_sunset.substr(-2) + ':' + seconds_sunset.substr(-2);
 
-                    let time_now = new Date();
-                    var now = time_now.toLocaleString();
-
-                    var line = "<div class='accordion-item'>"
-
-                    line += "<h2 class='accordion-header'><button  class='accordion-button collapsed ' data-bs-toggle='collapse' data-bs-target='#content1'aria-expanded='false'>" + data.name + " </button> </h2>"
-
-                    line += "<div id='content1' class='collapse ' >"
-                    line += "<div class='accordion-body'>"
-                    line += "<p>ณ เวลา= " + formattedTime + "น.</p>"
-                    line += "<p>อุณหภูมิ= " + temp.toFixed(2) + "°C</p>"
-                    line += "<p>ความชื้นสัมพัทธ์= "+ data.main.humidity +"%</p>"
-                    line += "<p>ดวงอาทิตย์ขึ้นเวลา= "+ formattedSunrise +"น.</p>"
-                    line += "<p>ดวงอาทิตย์ตกเวลา="+ formattedSunset +"น.</p>"
-                    line += "<p>วันเวลาสืบค้น:"+ now +"</p>"
+                    var line =  "<div class='card-body' id='cd'>"
+                    line += "<h2>" + data.name + "</h2>"
+                    line += "<p>อุณหภูมิ   "+ temp.toFixed(2) +" เซนเซียส</p>"
+                    line += "<p>ความชื้นสัมพัทธ์ "+ data.main.humidity +"%</p>"  
+                    line += "<p>ดวงอาทิตย์ขึ้นเวลา"+ formattedSunrise +" </p>"
+                    line += "<p>ดวงอาทิตย์ตกเวลา"+ formattedSunset +" </p>"
+                    line += "<p>ณ วันที่"+ now +"</p>"
                     line += "</div>"
-                    line += "</div>"
-                    line += "</div>"
-                    $("#name").append(line);
-
+                    $("#Card").append(line);
                })
-
-
      }
 </script>
 
