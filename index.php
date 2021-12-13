@@ -56,8 +56,8 @@
      getjson(x,y);
      $("#btnLoad").click(() => {
           $("#cd").remove();
-          var x = parseInt($("#x").val());
-          var y = parseInt($("#y").val());
+          var x = parseFloat($("#x").val());
+          var y = parseFloat($("#y").val());
           getjson(x, y);
      });
 
